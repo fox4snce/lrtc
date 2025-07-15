@@ -32,10 +32,13 @@ class User(UserMixin, db.Model):
     points = db.Column(db.Integer, default=0)
     submissions_count = db.Column(db.Integer, default=0)
     votes_given = db.Column(db.Integer, default=0)
+    is_blocked = db.Column(db.Boolean, default=False)
+    is_admin = db.Column(db.Boolean, default=False)
     
     submissions = db.relationship('Submission', backref='author', lazy=True)
     votes = db.relationship('Vote', backref='voter', lazy=True)
     comments = db.relationship('Comment', backref='author', lazy=True)
+    submitted_challenges = db.relationship('Challenge', backref='submitted_by', lazy=True)
 
 class Challenge(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +54,8 @@ class Challenge(db.Model):
     is_finished = db.Column(db.Boolean, default=False)
     winner_submission_id = db.Column(db.Integer, db.ForeignKey('submission.id'), nullable=True)
     challenge_order = db.Column(db.Integer, default=0)  # For controlling sequence
+    is_approved = db.Column(db.Boolean, default=False)  # For user-submitted challenges
+    submitted_by_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Who submitted this challenge
     
     submissions = db.relationship(
         'Submission',
@@ -421,6 +426,117 @@ def start_game():
     flash('Game started! First challenge is now active.')
     return redirect(url_for('manage_game'))
 
+@app.route('/submit_challenge', methods=['GET', 'POST'])
+@login_required
+def submit_challenge():
+    if current_user.is_blocked:
+        flash('Your account has been blocked. Contact an administrator.')
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        challenge = Challenge(
+            title=request.form['title'],
+            description=request.form['description'],
+            constitutional_context=request.form['constitutional_context'],
+            problem_statement=request.form['problem_statement'],
+            relevant_amendments=request.form['relevant_amendments'],
+            start_date=datetime.strptime(request.form['start_date'], '%Y-%m-%d'),
+            end_date=datetime.strptime(request.form['end_date'], '%Y-%m-%d'),
+            is_approved=False,
+            submitted_by_id=current_user.id
+        )
+        db.session.add(challenge)
+        db.session.commit()
+        flash('Your challenge has been submitted for admin approval!')
+        return redirect(url_for('index'))
+    
+    return render_template('submit_challenge.html')
+
+@app.route('/admin/dashboard')
+@login_required
+def admin_dashboard():
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    pending_challenges = Challenge.query.filter_by(is_approved=False).all()
+    blocked_users = User.query.filter_by(is_blocked=True).all()
+    active_challenge = Challenge.query.filter_by(is_active=True).first()
+    total_users = User.query.count()
+    total_submissions = Submission.query.count()
+    
+    return render_template('admin_dashboard.html', 
+                         pending_challenges=pending_challenges,
+                         blocked_users=blocked_users,
+                         active_challenge=active_challenge,
+                         total_users=total_users,
+                         total_submissions=total_submissions)
+
+@app.route('/admin/approve_challenge/<int:challenge_id>', methods=['POST'])
+@login_required
+def approve_challenge(challenge_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    challenge = Challenge.query.get_or_404(challenge_id)
+    challenge.is_approved = True
+    db.session.commit()
+    flash(f'Challenge "{challenge.title}" has been approved!')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/reject_challenge/<int:challenge_id>', methods=['POST'])
+@login_required
+def reject_challenge(challenge_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    challenge = Challenge.query.get_or_404(challenge_id)
+    db.session.delete(challenge)
+    db.session.commit()
+    flash(f'Challenge "{challenge.title}" has been rejected and deleted.')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/block_user/<int:user_id>', methods=['POST'])
+@login_required
+def block_user(user_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    user = User.query.get_or_404(user_id)
+    user.is_blocked = True
+    db.session.commit()
+    flash(f'User "{user.username}" has been blocked.')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/unblock_user/<int:user_id>', methods=['POST'])
+@login_required
+def unblock_user(user_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    user = User.query.get_or_404(user_id)
+    user.is_blocked = False
+    db.session.commit()
+    flash(f'User "{user.username}" has been unblocked.')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/make_admin/<int:user_id>', methods=['POST'])
+@login_required
+def make_admin(user_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    user = User.query.get_or_404(user_id)
+    user.is_admin = True
+    db.session.commit()
+    flash(f'User "{user.username}" is now an admin.')
+    return redirect(url_for('admin_dashboard'))
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
@@ -430,7 +546,8 @@ if __name__ == '__main__':
             admin = User(
                 username='admin',
                 email='admin@constitutiongame.com',
-                password_hash=generate_password_hash('admin123')
+                password_hash=generate_password_hash('admin123'),
+                is_admin=True
             )
             db.session.add(admin)
             db.session.commit()

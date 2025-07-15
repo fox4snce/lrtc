@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Challenge - Constitution Game{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                    <li class="breadcrumb-item active">Submit Challenge</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">
+                        <i class="fas fa-plus-circle"></i> Submit a Constitutional Challenge
+                    </h2>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Challenge Submission Guidelines</h6>
+                        <ul class="mb-0">
+                            <li>Choose real historical constitutional problems or current issues</li>
+                            <li>Provide clear context and background information</li>
+                            <li>State the problem clearly and specifically</li>
+                            <li>Include relevant constitutional text or amendments</li>
+                            <li>Your challenge will be reviewed by an admin before approval</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Challenge Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required 
+                                   placeholder="e.g., Fixing the Electoral College Problem">
+                            <div class="form-text">Choose a clear, descriptive title for the challenge</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Challenge Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required
+                                      placeholder="Brief overview of the constitutional problem..."></textarea>
+                            <div class="form-text">Provide a concise overview of the challenge</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="constitutional_context" class="form-label">Constitutional Context</label>
+                            <textarea class="form-control" id="constitutional_context" name="constitutional_context" rows="4" required
+                                      placeholder="Explain the historical and constitutional background..."></textarea>
+                            <div class="form-text">Provide the historical context and constitutional framework</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="problem_statement" class="form-label">The Problem</label>
+                            <textarea class="form-control" id="problem_statement" name="problem_statement" rows="4" required
+                                      placeholder="Clearly state the constitutional problem that needs solving..."></textarea>
+                            <div class="form-text">Clearly articulate the specific constitutional issue</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="relevant_amendments" class="form-label">Relevant Constitutional Sections</label>
+                            <textarea class="form-control" id="relevant_amendments" name="relevant_amendments" rows="4" required
+                                      placeholder="Include relevant constitutional text, amendments, or legal precedents..."></textarea>
+                            <div class="form-text">Include the constitutional text that's relevant to this problem</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Proposed Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                            <div class="form-text">When should this challenge begin? (Admin may adjust this)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Proposed End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                            <div class="form-text">When should this challenge close? (Admin may adjust this)</div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Home
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit for Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-lightbulb"></i> Challenge Ideas
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Electoral College reform
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Campaign finance regulation
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Supreme Court term limits
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Presidential impeachment process
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Voting rights protection
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Emergency powers limits
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Congressional redistricting
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Executive order authority
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Submission Process
+                    </h5>
+                    <ol class="mb-0">
+                        <li>Submit your challenge using this form</li>
+                        <li>Admin will review and approve/reject</li>
+                        <li>If approved, it will be added to the game rotation</li>
+                        <li>You'll earn points when your challenge is used!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

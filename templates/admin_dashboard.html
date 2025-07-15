@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Constitution Game{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-cog"></i> Admin Dashboard
+            </h1>
+            <p class="text-muted mb-4">Manage users, approve challenges, and monitor the game.</p>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h3>{{ total_users }}</h3>
+                    <p class="mb-0">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <h3>{{ total_submissions }}</h3>
+                    <p class="mb-0">Total Submissions</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h3>{{ pending_challenges|length }}</h3>
+                    <p class="mb-0">Pending Challenges</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <h3>{{ blocked_users|length }}</h3>
+                    <p class="mb-0">Blocked Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Challenges -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <i class="fas fa-clock"></i> Pending Challenge Approvals
+                    </h4>
+                    
+                    {% if pending_challenges %}
+                        {% for challenge in pending_challenges %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="card-title">{{ challenge.title }}</h5>
+                                            <p class="card-text">{{ challenge.description[:200] }}...</p>
+                                            <small class="text-muted">
+                                                Submitted by: {{ challenge.submitted_by.username if challenge.submitted_by else 'Unknown' }} • 
+                                                {{ challenge.created_at.strftime('%B %d, %Y') }}
+                                            </small>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <form method="POST" action="{{ url_for('approve_challenge', challenge_id=challenge.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                    <i class="fas fa-check"></i> Approve
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('reject_challenge', challenge_id=challenge.id) }}" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to reject this challenge?')">
+                                                    <i class="fas fa-times"></i> Reject
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h5>No Pending Challenges</h5>
+                            <p class="text-muted">All submitted challenges have been reviewed.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Management -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <i class="fas fa-users"></i> User Management
+                    </h4>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Points</th>
+                                    <th>Submissions</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in User.query.all() %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ user.username }}</strong>
+                                            {% if user.is_admin %}
+                                                <span class="badge bg-primary ms-2">Admin</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.points }}</td>
+                                        <td>{{ user.submissions_count }}</td>
+                                        <td>
+                                            {% if user.is_blocked %}
+                                                <span class="badge bg-danger">Blocked</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if user.is_blocked %}
+                                                <form method="POST" action="{{ url_for('unblock_user', user_id=user.id) }}" class="d-inline">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-unlock"></i> Unblock
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <form method="POST" action="{{ url_for('block_user', user_id=user.id) }}" class="d-inline">
+                                                    <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to block this user?')">
+                                                        <i class="fas fa-ban"></i> Block
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                            
+                                            {% if not user.is_admin %}
+                                                <form method="POST" action="{{ url_for('make_admin', user_id=user.id) }}" class="d-inline">
+                                                    <button type="submit" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-user-shield"></i> Make Admin
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-tools"></i> Quick Actions
+                    </h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('create_challenge') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Create New Challenge
+                        </a>
+                        <a href="{{ url_for('manage_game') }}" class="btn btn-success">
+                            <i class="fas fa-play"></i> Manage Game
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> Game Status
+                    </h5>
+                    {% if active_challenge %}
+                        <p><strong>Active Challenge:</strong> {{ active_challenge.title }}</p>
+                        <p><strong>Ends:</strong> {{ active_challenge.end_date.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        <p><strong>Submissions:</strong> {{ active_challenge.submissions|length }}</p>
+                    {% else %}
+                        <p class="text-muted">No active challenge at the moment.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
