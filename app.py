@@ -383,6 +383,10 @@ def leaderboard():
     users = User.query.order_by(User.points.desc()).limit(20).all()
     return render_template('leaderboard.html', users=users)
 
+@app.route('/references')
+def references():
+    return render_template('references.html')
+
 # Admin routes for creating challenges
 @app.route('/admin/create_challenge', methods=['GET', 'POST'])
 @login_required
