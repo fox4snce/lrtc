@@ -55,15 +55,11 @@ This is a puzzle game where players:
 ### First Time Setup
 1. **Set up secure admin account**:
    ```bash
-   # Set a secure setup token (use a strong random string)
-   export ADMIN_SETUP_TOKEN="your-secure-random-token-here"
-   
    # Run the app
    python app.py
    
    # Visit http://localhost:5000/setup_admin
-   # Enter your admin email, password, and the setup token
-   # Remove the environment variable after setup for security
+   # Enter your admin email and password to create your admin account
    ```
 
 2. **Login as admin** to create your first challenge:
