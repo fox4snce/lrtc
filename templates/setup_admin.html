@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Setup Admin - Let's Rewrite the Constitution!{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">🔐 Setup Admin Account</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <strong>⚠️ Security Notice:</strong> This setup can only be done once and requires a setup token.
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Admin Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Admin Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="form-text">Choose a strong password for your admin account.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="setup_token" class="form-label">Setup Token</label>
+                            <input type="password" class="form-control" id="setup_token" name="setup_token" required>
+                            <div class="form-text">Enter the setup token from your environment variables.</div>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Create Admin Account</button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    <div class="text-center">
+                        <small class="text-muted">
+                            <strong>Setup Instructions:</strong><br>
+                            1. Set ADMIN_SETUP_TOKEN environment variable<br>
+                            2. Visit this page with the token<br>
+                            3. Create your admin account<br>
+                            4. Remove the environment variable for security
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

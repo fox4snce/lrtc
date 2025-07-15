@@ -11,20 +11,8 @@ def init_database():
         db.drop_all()
         db.create_all()
         
-        # Create admin user
-        from app import User
-        from werkzeug.security import generate_password_hash
-        
-        admin = User(
-            username='admin',
-            email='admin@constitutiongame.com',
-            password_hash=generate_password_hash('admin123')
-        )
-        db.session.add(admin)
-        db.session.commit()
-        
         print("✅ Database initialized successfully!")
-        print("Admin user created: admin / admin123")
+        print("Note: Use /setup_admin to create admin account with secure setup token.")
 
 if __name__ == "__main__":
     init_database() 

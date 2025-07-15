@@ -537,19 +537,42 @@ def make_admin(user_id):
     flash(f'User "{user.username}" is now an admin.')
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/setup_admin', methods=['GET', 'POST'])
+def setup_admin():
+    # Check if admin already exists
+    if User.query.filter_by(username='admin').first():
+        flash('Admin user already exists!')
+        return redirect(url_for('index'))
+    
+    # Check for setup token (environment variable)
+    setup_token = os.environ.get('ADMIN_SETUP_TOKEN')
+    if not setup_token:
+        flash('Admin setup is not enabled. Set ADMIN_SETUP_TOKEN environment variable.')
+        return redirect(url_for('index'))
+    
+    if request.method == 'POST':
+        # Verify setup token
+        if request.form.get('setup_token') != setup_token:
+            flash('Invalid setup token!')
+            return redirect(url_for('setup_admin'))
+        
+        # Create admin user
+        admin = User(
+            username='admin',
+            email=request.form['email'],
+            password_hash=generate_password_hash(request.form['password']),
+            is_admin=True
+        )
+        db.session.add(admin)
+        db.session.commit()
+        
+        flash('Admin user created successfully! You can now log in.')
+        return redirect(url_for('login'))
+    
+    return render_template('setup_admin.html')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        
-        # Create admin user if it doesn't exist
-        if not User.query.filter_by(username='admin').first():
-            admin = User(
-                username='admin',
-                email='admin@constitutiongame.com',
-                password_hash=generate_password_hash('admin123'),
-                is_admin=True
-            )
-            db.session.add(admin)
-            db.session.commit()
     
     app.run(debug=True) 

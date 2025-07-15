@@ -76,7 +76,7 @@ def setup_automated_game():
                 print(f"{i+1}. {challenge_data['title']}")
             
             print("\n🎮 To start the automated game:")
-            print("1. Login as admin (username: admin, password: admin123)")
+            print("1. Login as admin (use /setup_admin to create admin account)")
             print("2. Go to http://localhost:5000/admin/manage_game")
             print("3. Click 'Start Game' to begin the automated progression")
             print("\n⏰ Each challenge will run for 24 hours, then automatically progress to the next one.")

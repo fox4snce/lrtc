@@ -53,9 +53,18 @@ This is a puzzle game where players:
 ## 👤 Getting Started
 
 ### First Time Setup
-1. The application will automatically create an admin user:
-   - Username: `admin`
-   - Password: `admin123`
+1. **Set up secure admin account**:
+   ```bash
+   # Set a secure setup token (use a strong random string)
+   export ADMIN_SETUP_TOKEN="your-secure-random-token-here"
+   
+   # Run the app
+   python app.py
+   
+   # Visit http://localhost:5000/setup_admin
+   # Enter your admin email, password, and the setup token
+   # Remove the environment variable after setup for security
+   ```
 
 2. **Login as admin** to create your first challenge:
    - Go to `http://localhost:5000/admin/create_challenge`
