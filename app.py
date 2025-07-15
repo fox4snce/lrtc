@@ -170,8 +170,14 @@ def reset_all_challenges():
         db.session.commit()
         print("Reset all challenges for new game loop")
         
-        # Activate the first challenge
-        activate_next_challenge()
+        # Find and activate the first challenge (don't call activate_next_challenge to avoid recursion)
+        first_challenge = Challenge.query.filter_by(challenge_order=0).first()
+        if first_challenge:
+            first_challenge.start_date = datetime.utcnow()
+            first_challenge.end_date = datetime.utcnow() + timedelta(hours=24)
+            first_challenge.is_active = True
+            db.session.commit()
+            print(f"Activated first challenge: '{first_challenge.title}'")
 
 def check_and_manage_challenges():
     """Main function to check for ended challenges and manage progression"""
