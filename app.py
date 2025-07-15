@@ -545,21 +545,11 @@ def make_admin(user_id):
 
 @app.route('/setup_admin', methods=['GET', 'POST'])
 def setup_admin():
-    # Check for setup token (environment variable)
-    setup_token = os.environ.get('ADMIN_SETUP_TOKEN')
-    if not setup_token:
-        flash('Admin setup is not enabled. Set ADMIN_SETUP_TOKEN environment variable.')
-        return redirect(url_for('index'))
+    # Check if admin already exists
+    admin = User.query.filter_by(username='admin').first()
     
     if request.method == 'POST':
-        # Verify setup token
-        if request.form.get('setup_token') != setup_token:
-            flash('Invalid setup token!')
-            return redirect(url_for('setup_admin'))
-        
         # Check if admin exists
-        admin = User.query.filter_by(username='admin').first()
-        
         if admin:
             # Update existing admin
             admin.email = request.form['email']
@@ -580,7 +570,7 @@ def setup_admin():
         return redirect(url_for('login'))
     
     # Check if admin exists for display
-    admin_exists = User.query.filter_by(username='admin').first() is not None
+    admin_exists = admin is not None
     return render_template('setup_admin.html', admin_exists=admin_exists)
 
 if __name__ == '__main__':

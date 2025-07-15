@@ -11,12 +11,12 @@
                     <h3 class="text-center">🔐 {% if admin_exists %}Update{% else %}Setup{% endif %} Admin Account</h3>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-{% if admin_exists %}info{% else %}warning{% endif %}">
-                        <strong>{% if admin_exists %}🔄 Update{% else %}⚠️ Setup{% endif %} Notice:</strong> 
+                    <div class="alert alert-{% if admin_exists %}info{% else %}success{% endif %}">
+                        <strong>{% if admin_exists %}🔄 Update{% else %}✅ Setup{% endif %} Notice:</strong> 
                         {% if admin_exists %}
-                            Update your admin password with the setup token.
+                            Update your admin password.
                         {% else %}
-                            This creates the admin account and requires a setup token.
+                            Create your admin account.
                         {% endif %}
                     </div>
                     
@@ -32,11 +32,7 @@
                             <div class="form-text">Choose a strong password for your admin account.</div>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="setup_token" class="form-label">Setup Token</label>
-                            <input type="password" class="form-control" id="setup_token" name="setup_token" required>
-                            <div class="form-text">Enter the setup token from your environment variables.</div>
-                        </div>
+
                         
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Create Admin Account</button>
@@ -46,11 +42,8 @@
                     <hr>
                     <div class="text-center">
                         <small class="text-muted">
-                            <strong>Setup Instructions:</strong><br>
-                            1. Set ADMIN_SETUP_TOKEN environment variable<br>
-                            2. Visit this page with the token<br>
-                            3. Create your admin account<br>
-                            4. Remove the environment variable for security
+                            <strong>Simple Setup:</strong><br>
+                            Just enter your email and password to create your admin account!
                         </small>
                     </div>
                 </div>
