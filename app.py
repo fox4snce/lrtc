@@ -470,13 +470,15 @@ def admin_dashboard():
     active_challenge = Challenge.query.filter_by(is_active=True).first()
     total_users = User.query.count()
     total_submissions = Submission.query.count()
+    all_users = User.query.all()
     
     return render_template('admin_dashboard.html', 
                          pending_challenges=pending_challenges,
                          blocked_users=blocked_users,
                          active_challenge=active_challenge,
                          total_users=total_users,
-                         total_submissions=total_submissions)
+                         total_submissions=total_submissions,
+                         all_users=all_users)
 
 @app.route('/admin/approve_challenge/<int:challenge_id>', methods=['POST'])
 @login_required

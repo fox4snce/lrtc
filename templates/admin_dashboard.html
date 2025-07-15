@@ -121,7 +121,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for user in User.query.all() %}
+                                {% for user in all_users %}
                                     <tr>
                                         <td>
                                             <strong>{{ user.username }}</strong>
