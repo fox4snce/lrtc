@@ -14,8 +14,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configure for subdirectory deployment
 app.config['PREFERRED_URL_SCHEME'] = 'https'
-app.config['APPLICATION_ROOT'] = '/lrtc'
-app.config['SERVER_NAME'] = None  # Don't set server name to force relative URLs
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -111,22 +109,7 @@ class Comment(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Override url_for to always include /lrtc prefix
-@app.template_global()
-def url_for(endpoint, **values):
-    from flask import url_for as flask_url_for
-    url = flask_url_for(endpoint, **values)
-    if not url.startswith('/lrtc'):
-        url = '/lrtc' + url
-    return url
 
-# Helper function for redirects with prefix
-def redirect_with_prefix(endpoint, **values):
-    from flask import url_for as flask_url_for, redirect
-    url = flask_url_for(endpoint, **values)
-    if not url.startswith('/lrtc'):
-        url = '/lrtc' + url
-    return redirect(url)
 
 # Automated game management functions
 def end_challenge_and_select_winner(challenge_id):
@@ -246,18 +229,18 @@ def register():
         
         if User.query.filter_by(username=username).first():
             flash('Username already exists')
-            return redirect_with_prefix('register')
+            return redirect(url_for('register'))
         
         if User.query.filter_by(email=email).first():
             flash('Email already registered')
-            return redirect_with_prefix('register')
+            return redirect(url_for('register'))
         
         user = User(username=username, email=email, password_hash=generate_password_hash(password))
         db.session.add(user)
         db.session.commit()
         
         flash('Registration successful! Please log in.')
-        return redirect_with_prefix('login')
+        return redirect(url_for('login'))
     
     return render_template('register.html')
 
@@ -270,7 +253,7 @@ def login():
         
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return redirect_with_prefix('index')
+            return redirect(url_for('index'))
         else:
             flash('Invalid username or password')
     
@@ -280,7 +263,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect_with_prefix('index')
+    return redirect(url_for('index'))
 
 @app.route('/challenges')
 def challenges():
