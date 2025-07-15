@@ -19,6 +19,20 @@ app.config['APPLICATION_ROOT'] = '/lrtc'
 # Set the URL prefix for the application
 app.config['URL_PREFIX'] = '/lrtc'
 
+# Force Flask to use the subdirectory in URL generation
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.exceptions import NotFound
+
+def simple_app(environ, start_response):
+    """Simple WSGI app that returns 404 for root"""
+    response = NotFound()
+    return response(environ, start_response)
+
+# Wrap the app to handle subdirectory
+app.wsgi_app = DispatcherMiddleware(simple_app, {
+    '/lrtc': app.wsgi_app
+})
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

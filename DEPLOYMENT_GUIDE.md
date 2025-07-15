@@ -16,7 +16,7 @@ public_html/
 ```
 
 ### 2. WSGI Configuration
-The `wsgi.py` file handles the subdirectory routing. Make sure your hosting provider points to `wsgi.py` as the WSGI entry point.
+The `app.py` file now has built-in subdirectory handling using Werkzeug's DispatcherMiddleware. The `wsgi.py` file is a simple wrapper. Make sure your hosting provider points to `wsgi.py` as the WSGI entry point.
 
 ### 3. PM2 Configuration
 Update your PM2 configuration to use the WSGI file:
