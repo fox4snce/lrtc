@@ -539,11 +539,6 @@ def make_admin(user_id):
 
 @app.route('/setup_admin', methods=['GET', 'POST'])
 def setup_admin():
-    # Check if admin already exists
-    if User.query.filter_by(username='admin').first():
-        flash('Admin user already exists!')
-        return redirect(url_for('index'))
-    
     # Check for setup token (environment variable)
     setup_token = os.environ.get('ADMIN_SETUP_TOKEN')
     if not setup_token:
@@ -556,23 +551,36 @@ def setup_admin():
             flash('Invalid setup token!')
             return redirect(url_for('setup_admin'))
         
-        # Create admin user
-        admin = User(
-            username='admin',
-            email=request.form['email'],
-            password_hash=generate_password_hash(request.form['password']),
-            is_admin=True
-        )
-        db.session.add(admin)
-        db.session.commit()
+        # Check if admin exists
+        admin = User.query.filter_by(username='admin').first()
         
-        flash('Admin user created successfully! You can now log in.')
+        if admin:
+            # Update existing admin
+            admin.email = request.form['email']
+            admin.password_hash = generate_password_hash(request.form['password'])
+            flash('Admin password updated successfully!')
+        else:
+            # Create new admin
+            admin = User(
+                username='admin',
+                email=request.form['email'],
+                password_hash=generate_password_hash(request.form['password']),
+                is_admin=True
+            )
+            db.session.add(admin)
+            flash('Admin user created successfully!')
+        
+        db.session.commit()
         return redirect(url_for('login'))
     
-    return render_template('setup_admin.html')
+    # Check if admin exists for display
+    admin_exists = User.query.filter_by(username='admin').first() is not None
+    return render_template('setup_admin.html', admin_exists=admin_exists)
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     
-    app.run(debug=True) 
+    # Production configuration
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=debug_mode) 
