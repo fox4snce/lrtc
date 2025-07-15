@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Solution - {{ challenge.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('challenges') }}">Challenges</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}">{{ challenge.title }}</a></li>
+                    <li class="breadcrumb-item active">Submit Solution</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">
+                        <i class="fas fa-pen-fancy"></i> Submit Your Solution
+                    </h2>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Challenge: {{ challenge.title }}</h6>
+                        <p class="mb-0">{{ challenge.description }}</p>
+                    </div>
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Solution Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required 
+                                   placeholder="Give your solution a clear, descriptive title">
+                            <div class="form-text">Choose a title that clearly describes your constitutional approach</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="constitutional_language" class="form-label">Constitutional Language</label>
+                            <textarea class="form-control" id="constitutional_language" name="constitutional_language" 
+                                      rows="8" required placeholder="Write your constitutional amendment or language here..."></textarea>
+                            <div class="form-text">
+                                Write clear, precise constitutional language that would solve the problem. 
+                                Use formal, legal language similar to the U.S. Constitution.
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="reasoning" class="form-label">Your Reasoning</label>
+                            <textarea class="form-control" id="reasoning" name="reasoning" 
+                                      rows="6" required placeholder="Explain your logical thinking and why this language would work..."></textarea>
+                            <div class="form-text">
+                                Explain your logical reasoning: Why does this language solve the problem? 
+                                How does it avoid creating new problems? What makes it clear and enforceable?
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Challenge
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i> Submit Solution
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-lightbulb"></i> Writing Tips
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Be precise and unambiguous
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Consider edge cases and exceptions
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Use clear, enforceable language
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Explain your logical reasoning
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> Consider unintended consequences
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-history"></i> Challenge Context
+                    </h5>
+                    <div class="constitutional-text mb-3">
+                        <strong>Problem:</strong><br>
+                        {{ challenge.problem_statement[:200] }}...
+                    </div>
+                    <div class="constitutional-text">
+                        <strong>Relevant Sections:</strong><br>
+                        {{ challenge.relevant_amendments[:200] }}...
+                    </div>
+                    <a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}" class="btn btn-outline-primary btn-sm mt-2">
+                        View Full Challenge
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,135 @@
+# "Let's Rewrite the Constitution!" - Design Document
+
+## Core Concept
+A competitive, gamified platform where users practice logical thinking and precise language creation by tackling constitutional problems. The goal is to teach people how to think systematically about rules, laws, and governance while engaging with real democratic issues.
+
+## Primary Educational Goals
+- **Logical Thinking**: Train users to identify problems and create systematic solutions
+- **Precise Language**: Practice writing clear, unambiguous rules that actually work
+- **Rule Creation**: Understand how laws and governance systems function
+- **Critical Analysis**: Examine why existing systems fail and how to improve them
+- **Democratic Engagement**: Connect with constitutional issues through active problem-solving
+
+## Game Mechanics
+
+### Challenge Structure
+- Each "level" presents a historical constitutional crisis (Dred Scott, Japanese internment, Watergate, post-9/11 surveillance, etc.)
+- Players submit their version of constitutional language to fix the problem
+- Community votes on submissions based on **clarity and effectiveness**
+- Winning entries become part of the final constitutional document
+
+### Scoring System
+**Primary Criteria: "Clearest logic that creates workable rules"**
+- Is the reasoning sound and logical?
+- Are the rules clear and unambiguous?
+- Could this actually function as law?
+- Does it solve the stated problem without creating new ones?
+- Can people understand and follow these rules?
+
+**Focus on Process, Not Product**: The value is in learning to think systematically about governance, not in producing a final document.
+
+### Gamification Elements
+- User levels/badges ("Constitutional Scholar," "Amendment Author")
+- Leaderboards for "most adopted language"
+- Achievement system
+- Progress tracking on document completion
+- Edit counters and contribution stats
+
+## Platform Features
+
+## Platform Features
+
+### Game Modes
+- **Community-Wide Challenges**: Everyone competes on same constitutional issue
+- **Group Challenges**: Private competitions for classrooms, organizations, etc.
+- **Historical Challenges**: Fix past constitutional crises
+- **Modern Issues**: Address current constitutional problems
+- **Human vs AI-Assisted**: Separate categories or voting mechanisms
+
+### Reddit-Style Forum Interface
+- **Submission Posts**: Users post their constitutional language solutions
+- **Discussion Threads**: Detailed conversations under each submission
+- **Mandatory Comment Voting**: Must explain why you upvoted/downvoted
+- **Comment Quality Control**: Community votes on helpfulness of explanations
+- **Sorting Options**: By votes, recency, controversy, group affiliation
+- **Search & Filter**: Find submissions by topic, author, group, etc.
+
+### Group & Community System
+- **Public Groups**: Open communities around topics/regions
+- **Private Groups**: Classrooms, organizations, closed communities
+- **Group Leaderboards**: Track progress within specific communities
+- **Cross-Group Challenges**: Groups can compete against each other
+- **Group Management**: Admin tools for educators and organizers
+
+## Technical Requirements
+
+### Web Platform Architecture
+- **Full-stack web application** (not mobile app)
+- Responsive design for desktop/tablet/mobile browsers
+- User authentication and session management
+- Database for users, submissions, votes, and comments
+
+### User Management
+- Account creation and login system
+- User profiles with stats and badges
+- **Group/Community System**:
+  - Users can join specific groups (classes, organizations, regions)
+  - Community-wide challenges vs. group-specific challenges
+  - Group leaderboards and progress tracking
+
+### Forum-Style Content System
+- **Reddit-like Interface**:
+  - Post constitutional language submissions
+  - Threaded discussion under each submission
+  - Upvote/downvote system with **mandatory comments**
+  - Sorting by votes, recency, controversy
+  - Reply chains and nested conversations
+
+### Voting & Discussion Features
+- **Required commenting for votes**: Users must explain their upvote/downvote
+- Comment voting (helpful/unhelpful feedback)
+- "Best explanation" highlighting for top comments
+- Discussion moderation tools
+- Flag inappropriate content system
+
+### Content Management
+- Historical crisis database with context and background
+- Rich text editor for submissions
+- Version control for document building
+- Search and filter functionality
+- Export tools for final document compilation
+
+## User Experience Flow
+
+1. **Discovery**: "Let's Rewrite the Constitution!" - sounds fun/interesting
+2. **Registration**: Create account, optionally join groups (classroom, organization, etc.)
+3. **Browse Challenges**: See active constitutional problems to solve
+4. **Join Community**: Choose community-wide game or group-specific challenge
+5. **Submit Language**: Write constitutional fix and post to forum-style interface
+6. **Engage in Discussion**: Read other submissions, discuss in comment threads
+7. **Vote with Purpose**: Upvote/downvote submissions but must explain reasoning
+8. **Skill Development**: Learn to think systematically about governance problems
+9. **Build Document**: Practice exercises contribute to learning, not real policy
+10. **Community Growth**: Invite others to develop logical thinking skills together
+
+## Success Metrics
+- User engagement and retention
+- Quality of submitted language (clarity scores)
+- Educational impact (teacher adoption)
+- Community size and activity
+- Completion of constitutional document sections
+
+## Stealth Benefits
+- **Logical Thinking Training**: Users learn to break down complex problems systematically
+- **Rule-Writing Skills**: Practice creating clear, functional governance language
+- **Critical Analysis**: Understand why systems fail and how to design better ones
+- **Democratic Literacy**: Learn how governance actually works through hands-on practice
+- **Problem-Solving Mindset**: Approach civic issues as solvable puzzles rather than complaints
+- **Engagement Through Practice**: Connect with democracy by actively working on solutions
+
+## Implementation Priority
+1. Basic challenge/submission system
+2. Voting and ranking functionality
+3. User profiles and gamification
+4. Educational content and teacher tools
+5. Final document compilation and export

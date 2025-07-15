@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Let's Rewrite the Constitution! - Home{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">Let's Rewrite the Constitution!</h1>
+        <p class="hero-subtitle">A competitive puzzle game where you practice logical thinking and precise language creation by tackling real constitutional problems.</p>
+        <div class="mt-4">
+            {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3">
+                    <i class="fas fa-user-plus"></i> Join the Game
+                </a>
+                <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            {% else %}
+                <a href="{{ url_for('submit_solution') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-play"></i> Submit Solution
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5">
+    {% if active_challenge %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card challenge-card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h2 class="card-title">
+                                    <i class="fas fa-trophy"></i> Current Challenge
+                                </h2>
+                                <h3>{{ active_challenge.title }}</h3>
+                            </div>
+                            <div class="text-end">
+                                <div class="countdown-timer mb-2">
+                                    <span class="badge bg-warning fs-6" id="countdown">
+                                        <i class="fas fa-clock"></i> Loading...
+                                    </span>
+                                </div>
+                                <small class="text-muted">
+                                    <i class="fas fa-users"></i> {{ active_challenge.submissions|length }} submissions
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <p class="card-text">{{ active_challenge.description }}</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-history"></i> Constitutional Context</h5>
+                                <div class="constitutional-text">
+                                    {{ active_challenge.constitutional_context[:200] }}...
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5><i class="fas fa-exclamation-triangle"></i> The Problem</h5>
+                                <div class="reasoning-text">
+                                    {{ active_challenge.problem_statement[:200] }}...
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{{ url_for('challenge_detail', challenge_id=active_challenge.id) }}" class="btn btn-primary">
+                                        <i class="fas fa-eye"></i> View Full Challenge
+                                    </a>
+                                </div>
+                                {% if current_user.is_authenticated %}
+                                    <a href="{{ url_for('submit_solution') }}" class="btn btn-success">
+                                        <i class="fas fa-pen-fancy"></i> Submit Your Solution
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('login') }}" class="btn btn-success">
+                                        <i class="fas fa-sign-in-alt"></i> Login to Submit
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h3>No Active Challenge</h3>
+                        <p class="text-muted">The game is currently between challenges. Check back soon for the next constitutional puzzle!</p>
+                        {% if current_user.is_authenticated and current_user.username == 'admin' %}
+                            <a href="{{ url_for('manage_game') }}" class="btn btn-primary">
+                                <i class="fas fa-cog"></i> Manage Game
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="row mt-5">
+        <div class="col-md-8">
+            <h2 class="mb-4">
+                <i class="fas fa-fire"></i> Recent Submissions
+            </h2>
+            {% if submissions %}
+                {% for submission in submissions %}
+                    <div class="card submission-card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h5 class="card-title">
+                                        {{ submission.title }}
+                                        {% if submission.is_winner %}
+                                            <span class="badge bg-success ms-2">
+                                                <i class="fas fa-crown"></i> Winner!
+                                            </span>
+                                        {% endif %}
+                                    </h5>
+                                    <p class="card-text text-muted">{{ submission.constitutional_language[:150] }}...</p>
+                                    <div class="d-flex align-items-center text-muted">
+                                        <small>
+                                            by <a href="{{ url_for('profile', username=submission.author.username) }}">{{ submission.author.username }}</a>
+                                        </small>
+                                        <small class="ms-3">
+                                            <i class="fas fa-calendar"></i> {{ submission.created_at.strftime('%B %d, %Y') }}
+                                        </small>
+                                        <small class="ms-3">
+                                            <i class="fas fa-trophy"></i> {{ submission.challenge.title }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="vote-buttons">
+                                    <span class="text-success me-2">
+                                        <i class="fas fa-arrow-up"></i> {{ submission.upvotes }}
+                                    </span>
+                                    <span class="text-danger">
+                                        <i class="fas fa-arrow-down"></i> {{ submission.downvotes }}
+                                    </span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('submission_detail', submission_id=submission.id) }}" class="btn btn-outline-primary btn-sm mt-2">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-lightbulb fa-3x text-muted mb-3"></i>
+                        <h5>No Submissions Yet</h5>
+                        <p class="text-muted">Be the first to submit a solution to the current challenge!</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <h3 class="mb-4">
+                <i class="fas fa-trophy"></i> Recent Winners
+            </h3>
+            {% set winners = submissions|selectattr('is_winner', 'equalto', true)|list %}
+            {% if winners %}
+                {% for submission in winners[:5] %}
+                    <div class="card mb-3 border-success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-crown text-warning me-2"></i>
+                                <strong>{{ submission.title }}</strong>
+                            </div>
+                            <p class="card-text text-muted">{{ submission.constitutional_language[:100] }}...</p>
+                            <small class="text-muted">
+                                by {{ submission.author.username }} • {{ submission.challenge.title }}
+                            </small>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-trophy fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No winners yet. Submit solutions to become the first winner!</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">
+                        <i class="fas fa-graduation-cap"></i> How It Works
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-lightbulb fa-2x"></i>
+                            </div>
+                            <h5 class="mt-3">1. Get a Challenge</h5>
+                            <p class="text-muted">Receive a historical constitutional crisis to solve</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-pen-fancy fa-2x"></i>
+                            </div>
+                            <h5 class="mt-3">2. Write Language</h5>
+                            <p class="text-muted">Craft precise constitutional language to fix the problem</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-vote-yea fa-2x"></i>
+                            </div>
+                            <h5 class="mt-3">3. Vote & Discuss</h5>
+                            <p class="text-muted">Vote on others' solutions and explain your reasoning</p>
+                        </div>
+                        <div class="col-md-3 text-center mb-3">
+                            <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-trophy fa-2x"></i>
+                            </div>
+                            <h5 class="mt-3">4. Learn & Grow</h5>
+                            <p class="text-muted">Develop logical thinking and precise language skills</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if active_challenge %}
+<script>
+// Countdown timer for the active challenge
+function updateCountdown() {
+    const endTime = new Date("{{ active_challenge.end_date.isoformat() }}").getTime();
+    const now = new Date().getTime();
+    const distance = endTime - now;
+    
+    if (distance < 0) {
+        document.getElementById('countdown').innerHTML = '<i class="fas fa-clock"></i> Challenge Ended';
+        document.getElementById('countdown').className = 'badge bg-danger fs-6';
+        return;
+    }
+    
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    document.getElementById('countdown').innerHTML = 
+        `<i class="fas fa-clock"></i> ${hours}h ${minutes}m ${seconds}s`;
+    
+    // Change color based on time remaining
+    if (distance < 3600000) { // Less than 1 hour
+        document.getElementById('countdown').className = 'badge bg-danger fs-6';
+    } else if (distance < 7200000) { // Less than 2 hours
+        document.getElementById('countdown').className = 'badge bg-warning fs-6';
+    } else {
+        document.getElementById('countdown').className = 'badge bg-success fs-6';
+    }
+}
+
+// Update countdown every second
+setInterval(updateCountdown, 1000);
+updateCountdown(); // Initial call
+</script>
+{% endif %}
+{% endblock %} 

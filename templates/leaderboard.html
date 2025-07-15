@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Leaderboard - Constitution Game{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-trophy"></i> Leaderboard
+            </h1>
+            <p class="text-muted mb-4">Top constitutional thinkers ranked by points earned through submissions, voting, and comments.</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% if users %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Player</th>
+                                        <th>Points</th>
+                                        <th>Level</th>
+                                        <th>Submissions</th>
+                                        <th>Votes Given</th>
+                                        <th>Member Since</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>
+                                                {% if loop.index == 1 %}
+                                                    <i class="fas fa-crown text-warning"></i> 1st
+                                                {% elif loop.index == 2 %}
+                                                    <i class="fas fa-medal text-secondary"></i> 2nd
+                                                {% elif loop.index == 3 %}
+                                                    <i class="fas fa-medal text-bronze"></i> 3rd
+                                                {% else %}
+                                                    {{ loop.index }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ url_for('profile', username=user.username) }}" class="text-decoration-none">
+                                                    <strong>{{ user.username }}</strong>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <span class="points-badge">{{ user.points }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="level-badge">{{ user.level }}</span>
+                                            </td>
+                                            <td>{{ user.submissions_count }}</td>
+                                            <td>{{ user.votes_given }}</td>
+                                            <td>{{ user.created_at.strftime('%B %Y') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                            <h5>No Players Yet</h5>
+                            <p class="text-muted">Be the first to join and start earning points!</p>
+                            {% if not current_user.is_authenticated %}
+                                <a href="{{ url_for('register') }}" class="btn btn-primary">
+                                    <i class="fas fa-user-plus"></i> Join the Game
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle"></i> How Points Work
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Earning Points</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-plus text-success"></i> Submit a solution: +10 points</li>
+                                <li><i class="fas fa-plus text-success"></i> Vote on submissions: +1-2 points</li>
+                                <li><i class="fas fa-plus text-success"></i> Comment on submissions: +1 point</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Leveling Up</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-star text-warning"></i> Level 1: 0-99 points</li>
+                                <li><i class="fas fa-star text-warning"></i> Level 2: 100-299 points</li>
+                                <li><i class="fas fa-star text-warning"></i> Level 3: 300+ points</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

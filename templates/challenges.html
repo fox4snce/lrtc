@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Challenges - Constitution Game{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-trophy"></i> Constitutional Challenges
+            </h1>
+            <p class="text-muted mb-4">Tackle real historical constitutional crises and practice your logical thinking skills.</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% if challenges.items %}
+            {% for challenge in challenges.items %}
+                <div class="col-md-6 mb-4">
+                    <div class="card challenge-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ challenge.title }}</h5>
+                            <p class="card-text">{{ challenge.description[:150] }}...</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <small class="text-muted">
+                                        <i class="fas fa-clock"></i> Ends: {{ challenge.end_date.strftime('%B %d, %Y') }}
+                                    </small>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-muted">
+                                        <i class="fas fa-users"></i> {{ challenge.submissions|length }} submissions
+                                    </small>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-arrow-right"></i> View Challenge
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <h5>No Active Challenges</h5>
+                        <p class="text-muted">Check back soon for new constitutional puzzles!</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    {% if challenges.pages > 1 %}
+        <nav aria-label="Challenge pagination" class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if challenges.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('challenges', page=challenges.prev_num) }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                {% for page_num in challenges.iter_pages() %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == challenges.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('challenges', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if challenges.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('challenges', page=challenges.next_num) }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+</div>
+{% endblock %} 
