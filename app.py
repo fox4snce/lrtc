@@ -14,6 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configure for subdirectory deployment
 app.config['PREFERRED_URL_SCHEME'] = 'https'
+app.config['APPLICATION_ROOT'] = '/lrtc'
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
