@@ -506,6 +506,33 @@ def reject_challenge(challenge_id):
     flash(f'Challenge "{challenge.title}" has been rejected and deleted.')
     return redirect(url_for('admin_dashboard'))
 
+@app.route('/admin/edit_challenge/<int:challenge_id>', methods=['GET', 'POST'])
+@login_required
+def edit_challenge(challenge_id):
+    if not current_user.is_admin:
+        flash('Access denied')
+        return redirect(url_for('index'))
+    
+    challenge = Challenge.query.get_or_404(challenge_id)
+    
+    if request.method == 'POST':
+        challenge.title = request.form['title']
+        challenge.description = request.form['description']
+        challenge.constitutional_context = request.form['constitutional_context']
+        challenge.problem_statement = request.form['problem_statement']
+        challenge.relevant_amendments = request.form['relevant_amendments']
+        
+        # Only allow date changes if challenge hasn't started
+        if not challenge.is_active:
+            challenge.start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d')
+            challenge.end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d')
+        
+        db.session.commit()
+        flash(f'Challenge "{challenge.title}" has been updated successfully!')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('edit_challenge.html', challenge=challenge)
+
 @app.route('/admin/block_user/<int:user_id>', methods=['POST'])
 @login_required
 def block_user(user_id):

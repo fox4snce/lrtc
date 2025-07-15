@@ -35,10 +35,15 @@
                                 </div>
                             </div>
                             
-                            <div class="d-grid">
+                            <div class="d-grid gap-2">
                                 <a href="{{ url_for('challenge_detail', challenge_id=challenge.id) }}" class="btn btn-primary">
                                     <i class="fas fa-arrow-right"></i> View Challenge
                                 </a>
+                                {% if current_user.is_authenticated and current_user.is_admin %}
+                                    <a href="{{ url_for('edit_challenge', challenge_id=challenge.id) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Challenge - Let's Rewrite the Constitution!{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">
+                        <i class="fas fa-edit"></i> 
+                        {% if challenge.is_active %}
+                            🚨 Emergency Edit Challenge
+                        {% else %}
+                            Edit Challenge
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if challenge.is_active %}
+                        <div class="alert alert-warning">
+                            <strong>⚠️ Emergency Edit Mode:</strong> This challenge is currently active. 
+                            Changes will affect ongoing submissions. Only edit if absolutely necessary!
+                        </div>
+                    {% endif %}
+                    
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Challenge Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                   value="{{ challenge.title }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" 
+                                      rows="3" required>{{ challenge.description }}</textarea>
+                            <div class="form-text">Brief description of the constitutional problem</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="constitutional_context" class="form-label">Constitutional Context</label>
+                            <textarea class="form-control" id="constitutional_context" name="constitutional_context" 
+                                      rows="4" required>{{ challenge.constitutional_context }}</textarea>
+                            <div class="form-text">Historical background and relevant constitutional text</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="problem_statement" class="form-label">Problem Statement</label>
+                            <textarea class="form-control" id="problem_statement" name="problem_statement" 
+                                      rows="5" required>{{ challenge.problem_statement }}</textarea>
+                            <div class="form-text">Detailed breakdown of the specific problems to solve</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="relevant_amendments" class="form-label">Relevant Amendments/Constitutional Text</label>
+                            <textarea class="form-control" id="relevant_amendments" name="relevant_amendments" 
+                                      rows="3" required>{{ challenge.relevant_amendments }}</textarea>
+                            <div class="form-text">Exact constitutional text and relevant amendments</div>
+                        </div>
+                        
+                        {% if not challenge.is_active %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="start_date" class="form-label">Start Date</label>
+                                        <input type="date" class="form-control" id="start_date" name="start_date" 
+                                               value="{{ challenge.start_date.strftime('%Y-%m-%d') }}" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="end_date" class="form-label">End Date</label>
+                                        <input type="date" class="form-control" id="end_date" name="end_date" 
+                                               value="{{ challenge.end_date.strftime('%Y-%m-%d') }}" required>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info">
+                                <strong>📅 Date Locked:</strong> Cannot change dates for active challenges.
+                                Start: {{ challenge.start_date.strftime('%B %d, %Y') }} | 
+                                End: {{ challenge.end_date.strftime('%B %d, %Y') }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 
+                                {% if challenge.is_active %}
+                                    Save Emergency Changes
+                                {% else %}
+                                    Save Changes
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                    
+                    {% if challenge.is_active %}
+                        <hr>
+                        <div class="text-center">
+                            <small class="text-muted">
+                                <strong>Emergency Edit Guidelines:</strong><br>
+                                • Only fix critical errors or typos<br>
+                                • Don't change the core problem<br>
+                                • Consider the impact on existing submissions<br>
+                                • Communicate changes to users if major
+                            </small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

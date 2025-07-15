@@ -72,6 +72,9 @@
                                             </small>
                                         </div>
                                         <div class="d-flex gap-2">
+                                            <a href="{{ url_for('edit_challenge', challenge_id=challenge.id) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
                                             <form method="POST" action="{{ url_for('approve_challenge', challenge_id=challenge.id) }}" class="d-inline">
                                                 <button type="submit" class="btn btn-success btn-sm">
                                                     <i class="fas fa-check"></i> Approve
@@ -186,6 +189,9 @@
                         </a>
                         <a href="{{ url_for('manage_game') }}" class="btn btn-success">
                             <i class="fas fa-play"></i> Manage Game
+                        </a>
+                        <a href="{{ url_for('challenges') }}" class="btn btn-info">
+                            <i class="fas fa-list"></i> View All Challenges
                         </a>
                     </div>
                 </div>
