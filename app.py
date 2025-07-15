@@ -16,6 +16,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PREFERRED_URL_SCHEME'] = 'https'
 app.config['APPLICATION_ROOT'] = '/lrtc'
 
+# Set the URL prefix for the application
+app.config['URL_PREFIX'] = '/lrtc'
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -209,6 +212,11 @@ scheduler.add_job(
     name='Check and manage challenges',
     replace_existing=True
 )
+
+# Context processor to make URL prefix available in templates
+@app.context_processor
+def inject_url_prefix():
+    return dict(url_prefix=app.config.get('URL_PREFIX', ''))
 
 # Routes
 @app.route('/')
